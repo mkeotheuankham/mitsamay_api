@@ -6,39 +6,17 @@ services:
     container_name: hasura
     restart: unless-stopped
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:Lcis7819138@msmrds1513r1.cz862wocu62h.ap-southeast-2.rds.amazonaws.com:5432/VTC
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      HASURA_GRAPHQL_DEV_MODE: "true"
-      HASURA_GRAPHQL_LOG_LEVEL: debug
+      HASURA_GRAPHQL_ENABLE_CONSOLE: ${HASURA_GRAPHQL_ENABLE_CONSOLE}
+      HASURA_GRAPHQL_DEV_MODE: ${HASURA_GRAPHQL_DEV_MODE}
+      HASURA_GRAPHQL_LOG_LEVEL: ${HASURA_GRAPHQL_LOG_LEVEL}
+      HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura-migrations
+      HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
     ports:
-      - "8081:8080"
+      - "8080:8080"
     volumes:
       - ./metadata:/hasura-metadata
-
-  auth:
-    image: nhost/hasura-auth:latest
-    container_name: auth
-    depends_on:
-      - graphql-engine
-    restart: unless-stopped
-    env_file: .env
-    environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:Lcis7819138@msmrds1513r1.cz862wocu62h.ap-southeast-2.rds.amazonaws.com:5432/VTC
-      HASURA_GRAPHQL_GRAPHQL_URL: http://graphql-engine:8080/v1/graphql
-      AUTH_SMTP_HOST: mailhog
-      AUTH_SMTP_PORT: 1025
-      AUTH_SMTP_SECURE: "false"
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./email-templates:/app/email-templates
-
-  mailhog:
-    image: mailhog/mailhog
-    container_name: mailhog
-    ports:
-      - "1025:1025"
-      - "8025:8025"
+      - ./migrations:/hasura-migrations

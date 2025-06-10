@@ -1,11 +1,21 @@
-dist
-*.log
-coverage
-private.pem
-node_modules
-data
-yarn-error.log
-package-lock.json
-
-docker/data
+# Environment files
 .env
+.env.*
+!.env.example
+
+# Hasura files
+metadata/
+migrations/
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System files
+.DS_Store
